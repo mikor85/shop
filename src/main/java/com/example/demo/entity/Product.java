@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -28,9 +31,34 @@ public class Product {
     @Column(name = "PRODUCT_IS_ACTIVE", columnDefinition = "Boolean default 'true' ", nullable = false)
     private boolean isActive;
 
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.ALL, CascadeType.MERGE}
+    )
+    @JoinTable(
+            name = "product_cards",
+            joinColumns = {@JoinColumn(name = "product_id")},
+            inverseJoinColumns = {@JoinColumn(name = "card_id")}
+    )
+    //@JsonIgnore
+    private Set<Card> cards = new HashSet<>();
+
     public Product(String name, BigDecimal price, boolean isActive) {
         this.name = name;
         this.price = price;
         this.isActive = isActive;
+    }
+
+    public void addCard(Card card) {
+        this.cards.add(card);
+        card.getProducts().add(this);
+    }
+
+    public void removeCards(Long cardId) {
+        Card card = cards.stream().filter(c -> c.getId().equals(cardId)).findFirst().orElse(null);
+        if (card != null) {
+            cards.remove(card);
+            card.getProducts().remove(this);
+        }
     }
 }

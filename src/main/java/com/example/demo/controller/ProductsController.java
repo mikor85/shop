@@ -5,9 +5,9 @@ import com.example.demo.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -87,5 +87,32 @@ public class ProductsController {
             @RequestParam(name = "status", defaultValue = "false") boolean status
     ) {
         repository.save(new Product(name, price, status));
+    }
+
+    @PostMapping("/products")
+    public ResponseEntity<Product> createProduct(
+
+            // Аннотация @RequestBody помечает
+            //{
+            //        "name": "Spagetti dolche",
+            //        "price": 1.22,
+            //        "isActive": true
+            //}
+            @RequestBody Product productRequest) {
+        repository.save(productRequest);
+        return new ResponseEntity<>(productRequest, HttpStatus.CREATED);
+    }
+
+    // DELETE 	/products/:id       	delete a Product (and its Comments) by :id
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<HttpStatus> deleteProduct(
+            @PathVariable(value = "productId") Long productId
+    ) {
+        if (!repository.existsById(productId)) {
+            throw new IllegalArgumentException("There is no product with id: " + productId);
+        }
+        repository.deleteById(productId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

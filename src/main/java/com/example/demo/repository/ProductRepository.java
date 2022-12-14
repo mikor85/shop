@@ -32,4 +32,6 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
         // Pageable - параметр, какая страница, сколько записей на странице
     Page<Product> getPage(Pageable pageable);
 
+    List<Product> findProductsByCardsId(Long cardId);
+
 }

@@ -15,3 +15,8 @@ INSERT INTO products (PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_IS_ACTIVE) values ('S
 INSERT INTO products (PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_IS_ACTIVE) values ('Salmon rolls', 8.71, 'true');
 INSERT INTO products (PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_IS_ACTIVE) values ('Baguette with coriander', 2.31, 'true');
 INSERT INTO products (PRODUCT_NAME, PRODUCT_PRICE, PRODUCT_IS_ACTIVE) values ('Pork sausages', 2.44, 'false');
+
+insert into COMMENTS (CONTENT, PRODUCT_ID) values ('Its my favorite product', 1);
+insert into COMMENTS (CONTENT, PRODUCT_ID) values ('I like it very much', 1);
+
+insert into COMMENTS (CONTENT, PRODUCT_ID) values ('Red Bull is best', 2);
