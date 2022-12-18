@@ -101,9 +101,6 @@ public class CardController {
         return new ResponseEntity<>(productRepository.findProductsByCardsId(cardId), HttpStatus.OK);
     }
 
-    //GET 	/products 			    	retrieve all Products            - Method is in ProductRepository
-    //GET 	/products/:id 		    	retrieve a Product with it Cards - Method is in ProductRepository
-
     //GET 	/cards/:id 			    	retrieve a Card by :id
     @GetMapping("/cards/{cardId}")
     public ResponseEntity<Card> getCardById(
@@ -163,5 +160,7 @@ public class CardController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    //DELETE 	/products/:id 			delete a Product by :id - already exists in ProductController
+    //DELETE 	/products/:id   delete a Product by :id          - already exists in ProductController
+    //GET 	    /products       retrieve all Products            - Method is in ProductRepository
+    //GET   	/products/:id   retrieve a Product with it Cards - Method is in ProductRepository
 }
