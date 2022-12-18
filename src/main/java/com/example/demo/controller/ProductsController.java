@@ -16,11 +16,11 @@ import java.util.List;
 @RestController
 public class ProductsController {
 
-    private ProductRepository repository;
+    private ProductRepository productRepository;
 
     @Autowired
     public ProductsController(ProductRepository repository) {
-        this.repository = repository;
+        this.productRepository = repository;
     }
 
     // напишите код, который возвратит все продукты по запросу на
@@ -29,19 +29,42 @@ public class ProductsController {
     public List<Product> getAll() {
         List<Product> products = new ArrayList<>();
 
-        repository.findAll().forEach(products::add);
+        productRepository.findAll().forEach(products::add);
 
         return products;
     }
 
-    // GETGET http://localhost:8080/priceBetween?from=1&to=3
+    // GET   /products               retrieve all Products
+    @GetMapping("/products")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> products = new ArrayList<>();
+
+        productRepository.findAll().forEach(products::add);
+
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    // GET  /products/:id            retrieve a Product with it Cards
+    @GetMapping("/products/{productId}")
+    public ResponseEntity<Product> getProductById(
+            @PathVariable(name = "productId") Long productId
+    ) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(
+                        () -> new IllegalArgumentException("There is no product with id: " + productId)
+                );
+
+        return new ResponseEntity<>(product, HttpStatus.OK);
+    }
+
+    // GET http://localhost:8080/priceBetween?from=1&to=3
     @GetMapping("/priceBetween")
     public List<Product> priceBetween(
             @RequestParam(name = "from", defaultValue = "0.0") BigDecimal from,
             @RequestParam(name = "to", defaultValue = "0.0") BigDecimal to
     ) {
 
-        return repository.getProductsWithPriceBetween(from, to);
+        return productRepository.getProductsWithPriceBetween(from, to);
     }
 
     // GET http://localhost:8080/getByStatus?active=true
@@ -50,7 +73,7 @@ public class ProductsController {
             @RequestParam(name = "active", defaultValue = "false") boolean status
     ) {
 
-        return repository.getProductWithStatus(status);
+        return productRepository.getProductWithStatus(status);
     }
 
     // GET http://localhost:8080/sort?column=price&direction=DESC
@@ -64,7 +87,7 @@ public class ProductsController {
             dir = Sort.Direction.DESC;
         }
 
-        return repository.getAll(Sort.by(dir, column));
+        return productRepository.getAll(Sort.by(dir, column));
     }
 
     // GET http://localhost:8080/page?page=0&size=5
@@ -76,7 +99,7 @@ public class ProductsController {
             @RequestParam(name = "size", defaultValue = "5") int pageSize
     ) {
         Pageable pageable = Pageable.ofSize(pageSize).withPage(pageNumber);
-        return repository.getPage(pageable).stream().toList();
+        return productRepository.getPage(pageable).stream().toList();
     }
 
     // GET http://localhost:8080/addProduct?name=Vegetarian burger&price=2.15&status=true
@@ -86,7 +109,7 @@ public class ProductsController {
             @RequestParam(name = "price", defaultValue = "0.00") BigDecimal price,
             @RequestParam(name = "status", defaultValue = "false") boolean status
     ) {
-        repository.save(new Product(name, price, status));
+        productRepository.save(new Product(name, price, status));
     }
 
     @PostMapping("/products")
@@ -99,7 +122,7 @@ public class ProductsController {
             //        "isActive": true
             //}
             @RequestBody Product productRequest) {
-        repository.save(productRequest);
+        productRepository.save(productRequest);
         return new ResponseEntity<>(productRequest, HttpStatus.CREATED);
     }
 
@@ -108,10 +131,10 @@ public class ProductsController {
     public ResponseEntity<HttpStatus> deleteProduct(
             @PathVariable(value = "productId") Long productId
     ) {
-        if (!repository.existsById(productId)) {
+        if (!productRepository.existsById(productId)) {
             throw new IllegalArgumentException("There is no product with id: " + productId);
         }
-        repository.deleteById(productId);
+        productRepository.deleteById(productId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

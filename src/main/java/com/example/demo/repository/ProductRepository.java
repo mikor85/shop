@@ -21,7 +21,6 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
     // native - используется SQL базы данных
     List<Product> getProductsWithPriceBetween(BigDecimal priceFrom, BigDecimal priceTo);
 
-
     @Query("select p from Product p where p.isActive = :isActive")
     List<Product> getProductWithStatus(boolean isActive);
 

@@ -72,11 +72,10 @@ public class CommentController {
     }
 
     // PUT  	/comments/:id       	update a Comment by :id
-    // PUT  	/comments/:id?commentContent=Nice taste       	update a Comment by :id
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<Comment> updateCommentById(
             @PathVariable(value = "commentId") Long commentId,
-            @RequestParam(name = "commentContent", defaultValue = "") String commentContent
+            @RequestBody Comment commentRequest
     ) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(
@@ -85,9 +84,8 @@ public class CommentController {
                         )
                 );
 
-        comment.setContent(commentContent);
-        commentRepository.save(comment);
-        return new ResponseEntity<>(comment, HttpStatus.ACCEPTED);
+        comment.setContent(commentRequest.getContent());
+        return new ResponseEntity<>(commentRepository.save(comment), HttpStatus.ACCEPTED);
     }
 
     // DELETE 	/comments/:id       	delete a Comment by :id
@@ -97,9 +95,7 @@ public class CommentController {
     ) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(
-                        () -> new IllegalArgumentException(
-                                "Comment with id " + commentId + " not found"
-                        )
+                        () -> new IllegalArgumentException("Comment with id " + commentId + " not found")
                 );
 
         commentRepository.delete(comment);

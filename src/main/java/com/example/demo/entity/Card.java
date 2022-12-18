@@ -25,7 +25,7 @@ public class Card {
                     CascadeType.ALL,     // удалять строчки в промежуточной таблице при удалении карты
                     CascadeType.MERGE
             },
-            mappedBy = "cards"
+            mappedBy = "cards"           // название поля в классе основной сущности
     )
     @JsonIgnore
     private Set<Product> products = new HashSet<>();

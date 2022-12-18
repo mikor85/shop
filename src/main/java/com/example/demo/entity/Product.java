@@ -36,9 +36,9 @@ public class Product {
             cascade = {CascadeType.ALL, CascadeType.MERGE}
     )
     @JoinTable(
-            name = "product_cards",
-            joinColumns = {@JoinColumn(name = "product_id")},
-            inverseJoinColumns = {@JoinColumn(name = "card_id")}
+            name = "product_cards",                               // название таблицы
+            joinColumns = {@JoinColumn(name = "product_id")},     // название колонки
+            inverseJoinColumns = {@JoinColumn(name = "card_id")}  // название колонки
     )
     //@JsonIgnore
     private Set<Card> cards = new HashSet<>();
